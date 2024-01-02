@@ -23,4 +23,6 @@ type UserRepo interface {
 
 type UserTeamRepo interface {
 	List(ctx *gin.Context, db *gorm.DB, req *user_dto.SubUserListReq) (*user_dto.SubUserListResp, error)
+	AddSubUser(ctx *gin.Context, db *gorm.DB, subUserId string, userId string) error
+	DelSubUser(ctx *gin.Context, db *gorm.DB, id string) error
 }

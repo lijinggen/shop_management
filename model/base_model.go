@@ -22,9 +22,3 @@ func (t BaseModel) BeforeUpdate(tx *gorm.DB) (e error) {
 	tx.Statement.SetColumn("modify_time", now)
 	return
 }
-
-func (t BaseModel) BeforeDelete(tx *gorm.DB) (e error) {
-	now := time.Now()
-	tx.Statement.SetColumn("deleted_time", now)
-	return
-}

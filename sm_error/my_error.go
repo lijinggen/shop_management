@@ -12,6 +12,9 @@ var ErrMap map[int]string
 func init() {
 	ErrMap = make(map[int]string)
 	ErrMap[error_code.UserPhoneExists] = "手机号已经存在"
+	ErrMap[error_code.ReqParamError] = "请求参数错误"
+	ErrMap[error_code.UserNoExists] = "用户不存在"
+	ErrMap[error_code.DBError] = "数据库出错"
 }
 
 // define 000 00000

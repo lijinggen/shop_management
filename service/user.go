@@ -21,4 +21,6 @@ type UserService interface {
 
 type UserTeamService interface {
 	SubUserList(ctx *gin.Context, req *user_dto.SubUserListReq) (*user_dto.SubUserListResp, error)
+	AddSubUser(ctx *gin.Context, req *user_dto.AddSubUserReq) error
+	DelSubUser(ctx *gin.Context, req *user_dto.DelSubUserReq) error
 }

@@ -12,7 +12,6 @@ import (
 	"github.com/shop_management/util"
 	"github.com/shop_management/vars"
 	"gorm.io/gorm"
-	"time"
 )
 
 type userRepoImpl struct {
@@ -115,8 +114,7 @@ func (u *userRepoImpl) Save(ctx *gin.Context, db *gorm.DB, req *user_dto.User) e
 }
 
 func (u *userRepoImpl) Delete(ctx *gin.Context, db *gorm.DB, userId string) error {
-	now := time.Now()
-	err := db.Model(&model.User{}).Where("id = ?", userId).Update("deleted_time", &now).Error
+	err := db.Where("id = ?", userId).Delete(&model.User{}).Error
 	if err != nil {
 		return sm_error.NewHttpError(error_code.DBError)
 	}

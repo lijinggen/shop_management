@@ -21,9 +21,11 @@ type User struct {
 }
 
 type SubUser struct {
-	Id    string
-	Name  string
-	Phone string
+	Id        string
+	UserId    string
+	SubUserId string
+	Name      string
+	Phone     string
 }
 
 type UserLogin struct {
@@ -83,4 +85,12 @@ type SubUserListReq struct {
 type SubUserListResp struct {
 	Pager *common_dto.Pager `json:"pager"`
 	List  []*SubUser        `json:"list"`
+}
+
+type AddSubUserReq struct {
+	Phone string `json:"phone"`
+}
+
+type DelSubUserReq struct {
+	Id string `json:"id"`
 }

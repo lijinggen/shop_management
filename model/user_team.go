@@ -3,6 +3,7 @@ package model
 import "time"
 
 type UserTeam struct {
+	BaseModel
 	ID         string    `json:"id"`
 	UserID     string    `json:"user_id"`
 	SubUserID  string    `json:"sub_user_id"`

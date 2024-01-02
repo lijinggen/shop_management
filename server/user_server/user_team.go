@@ -43,9 +43,11 @@ func (u *UserTeamServer) SubUserList(ctx *gin.Context) (interface{}, error) {
 	list := make([]*user_po.SubUser, 0)
 	for _, user := range r.List {
 		list = append(list, &user_po.SubUser{
-			Id:    user.Id,
-			Name:  user.Name,
-			Phone: user.Phone,
+			Id:        user.Id,
+			UserId:    user.UserId,
+			SubUserId: user.SubUserId,
+			Name:      user.Name,
+			Phone:     user.Phone,
 		})
 	}
 	resp := &user_po.SubUserListResp{
@@ -57,4 +59,30 @@ func (u *UserTeamServer) SubUserList(ctx *gin.Context) (interface{}, error) {
 		List: list,
 	}
 	return resp, nil
+}
+
+func (u *UserTeamServer) AddSubUser(ctx *gin.Context) (interface{}, error) {
+	req := user_po.AddSubUserReq{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		return nil, sm_error.NewHttpError(error_code.ReqParamError)
+	}
+	err = u.userTeamService.AddSubUser(ctx, &user_dto.AddSubUserReq{Phone: req.Phone})
+	if err != nil {
+		return nil, err
+	}
+	return &common_po.CommonResp{}, nil
+}
+
+func (u *UserTeamServer) DelSubUser(ctx *gin.Context) (interface{}, error) {
+	req := user_po.DelSubUserReq{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		return nil, sm_error.NewHttpError(error_code.ReqParamError)
+	}
+	err = u.userTeamService.DelSubUser(ctx, &user_dto.DelSubUserReq{Id: req.Id})
+	if err != nil {
+		return nil, err
+	}
+	return &common_po.CommonResp{}, nil
 }

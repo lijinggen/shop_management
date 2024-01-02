@@ -33,7 +33,9 @@ func (u *userTeamRepoImpl) List(ctx *gin.Context, db *gorm.DB, req *user_dto.Sub
 	dList := make([]*user_dto.SubUser, 0)
 	for _, user := range subUsers {
 		dList = append(dList, &user_dto.SubUser{
-			Id: user.SubUserID,
+			Id:        user.ID,
+			SubUserId: user.SubUserID,
+			UserId:    user.UserID,
 		})
 	}
 	resp := &user_dto.SubUserListResp{
@@ -43,4 +45,23 @@ func (u *userTeamRepoImpl) List(ctx *gin.Context, db *gorm.DB, req *user_dto.Sub
 	resp.Pager.TotalRows = totalRows
 
 	return resp, nil
+}
+
+func (u *userTeamRepoImpl) AddSubUser(ctx *gin.Context, db *gorm.DB, subUserId string, userId string) error {
+	err := db.Create(&model.UserTeam{
+		UserID:    userId,
+		SubUserID: subUserId,
+	}).Error
+	if err != nil {
+		return sm_error.NewHttpError(error_code.DBError)
+	}
+	return nil
+}
+
+func (u *userTeamRepoImpl) DelSubUser(ctx *gin.Context, db *gorm.DB, id string) error {
+	err := db.Where("id=?", id).Delete(&model.UserTeam{}).Error
+	if err != nil {
+		return sm_error.NewHttpError(error_code.DBError)
+	}
+	return nil
 }

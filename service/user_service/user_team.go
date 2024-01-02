@@ -7,6 +7,8 @@ import (
 	"github.com/shop_management/repository"
 	"github.com/shop_management/repository/user_repo"
 	"github.com/shop_management/service"
+	"github.com/shop_management/sm_error"
+	"github.com/shop_management/sm_error/error_code"
 	"github.com/shop_management/util"
 )
 
@@ -46,11 +48,36 @@ func (u *userTeamServiceImpl) SubUserList(ctx *gin.Context, req *user_dto.SubUse
 		userDetailMap[user.Id] = user
 	}
 
-	for _, user := range resp.List {
-		if v, ok := userDetailMap[user.Id]; ok {
-			user.Name = v.Name
-			user.Phone = v.Phone
+	for _, subUserRecord := range resp.List {
+		if v, ok := userDetailMap[subUserRecord.SubUserId]; ok {
+			subUserRecord.Name = v.Name
+			subUserRecord.Phone = v.Phone
 		}
 	}
 	return resp, nil
+}
+
+func (u *userTeamServiceImpl) AddSubUser(ctx *gin.Context, req *user_dto.AddSubUserReq) error {
+	subUser, err := u.userRepo.GetByPhone(ctx, util.GetDBFromContext(ctx), req.Phone)
+	if err != nil {
+		return err
+	}
+	if subUser == nil {
+		return sm_error.NewHttpError(error_code.UserNoExists)
+	}
+	userId, _ := ctx.Cookie("user_id")
+
+	err = u.userTeamRepo.AddSubUser(ctx, util.GetDBFromContext(ctx), subUser.Id, userId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *userTeamServiceImpl) DelSubUser(ctx *gin.Context, req *user_dto.DelSubUserReq) error {
+	err := u.userTeamRepo.DelSubUser(ctx, util.GetDBFromContext(ctx), req.Id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
